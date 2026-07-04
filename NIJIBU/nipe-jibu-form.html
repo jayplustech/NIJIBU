@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nipe Jibu — Fomu ya Usajili</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cover:#0F6E56; --cover-dark:#085041; --accent:#D85A30; --accent-dark:#993C1D;
+    --paper-line:#C9D3D9; --margin-red:#C2453A; --ink:#262421; --ink-soft:#5b5850; --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:'IBM Plex Sans', sans-serif; color:#fff; background:var(--cover); line-height:1.6;}
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:600; margin:0;}
+  a{color:inherit; text-decoration:none;}
+  :focus-visible{outline:3px solid var(--accent); outline-offset:2px;}
+  svg{display:block;}
+
+  header.nav{
+    position:sticky; top:0; z-index:50; background:var(--cover-dark);
+    border-bottom:1px solid rgba(255,255,255,0.15);
+    display:flex; align-items:center; justify-content:space-between; padding:14px 6vw; gap:16px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-weight:600; font-size:19px; font-family:'Fraunces',serif; color:#fff;}
+  .brand svg{width:32px; height:32px;}
+  .nav-right{display:flex; align-items:center; gap:14px;}
+  .lang-toggle{display:flex; background:rgba(255,255,255,0.12); border-radius:20px; padding:3px;}
+  .lang-btn{background:none; border:none; color:rgba(255,255,255,0.7); font-size:12.5px; font-weight:600; padding:5px 12px; border-radius:16px; cursor:pointer; font-family:'IBM Plex Sans',sans-serif;}
+  .lang-btn.active{background:#fff; color:var(--cover);}
+  .back-link{font-size:14px; color:rgba(255,255,255,0.75);}
+  .back-link:hover{color:#fff;}
+
+  main{
+    background-image: repeating-linear-gradient(to bottom, transparent 0 39px, rgba(255,255,255,0.18) 39px 40px);
+    padding:56px 6vw 80px; position:relative;
+  }
+  main::before{
+    content:""; position:absolute; top:0; bottom:0; left:calc(6vw + 46px); width:1.5px;
+    background:var(--margin-red); opacity:0.75;
+  }
+  .wrap{max-width:640px; margin:0 auto; position:relative; z-index:1;}
+  .eyebrow{font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:#FFD9C4; font-weight:600; margin-bottom:10px;}
+  h1.title{font-size:clamp(26px,4vw,32px); margin-bottom:8px; color:#fff;}
+  .subtitle{color:rgba(255,255,255,0.8); font-size:15px; margin-bottom:32px; max-width:480px;}
+
+  .card{background:var(--card); border:1px solid var(--paper-line); border-radius:14px; padding:32px; box-shadow:0 1px 0 var(--paper-line); color:var(--ink);}
+  .field{margin-bottom:20px;}
+  .field label{display:block; font-size:13.5px; font-weight:600; margin-bottom:6px;}
+  .field .hint{font-size:12px; color:var(--ink-soft); margin-top:4px;}
+  .field input[type="text"], .field input[type="date"], .field textarea{
+    width:100%; border:1px solid var(--paper-line); border-radius:8px; padding:10px 12px;
+    font-size:14px; font-family:'IBM Plex Sans',sans-serif; background:#fff; color:var(--ink);
+  }
+  .field textarea{resize:vertical; min-height:96px;}
+  .file-drop{border:1.5px dashed var(--paper-line); border-radius:8px; padding:16px; text-align:center; font-size:13.5px; color:var(--ink-soft); cursor:pointer; position:relative;}
+  .file-drop input[type="file"]{position:absolute; inset:0; opacity:0; cursor:pointer;}
+  .file-drop.has-file{border-color:var(--cover); color:var(--cover); font-weight:600;}
+  .row-2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:520px){ .row-2{grid-template-columns:1fr;} }
+  .submit-btn{width:100%; background:var(--accent); color:#fff; border:none; border-radius:8px; padding:14px 20px; font-size:15px; font-weight:600; cursor:pointer; margin-top:8px; font-family:'IBM Plex Sans',sans-serif;}
+  .submit-btn:hover{background:var(--accent-dark);}
+  .disclaimer{background:#F1EFE8; border-left:3px solid var(--accent); border-radius:6px; padding:12px 14px; font-size:13px; color:var(--ink-soft); margin-top:24px;}
+  .confirm{display:none; background:var(--card); border:1px solid var(--paper-line); border-radius:14px; padding:32px; text-align:center; color:var(--ink);}
+  .confirm.show{display:block;}
+  .confirm svg{margin:0 auto 12px;}
+  .confirm h2{font-size:20px; margin-bottom:8px;}
+  .confirm p{color:var(--ink-soft); font-size:14px; margin-bottom:20px;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="brand">
+    <svg viewBox="0 0 56 56" aria-hidden="true"><rect width="56" height="56" rx="14" fill="#0F6E56"/><rect x="12" y="12" width="32" height="24" rx="8" fill="none" stroke="#fff" stroke-width="3"/><path d="M20 36 L20 45 L29 36" fill="#fff"/><path d="M19 24 L25 30 L37 17" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Nipe Jibu
+  </div>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" id="langBtnSw" onclick="setLang('sw')">SW</button>
+      <button class="lang-btn active" id="langBtnEn" onclick="setLang('en')">EN</button>
+    </div>
+    <a class="back-link" href="nipe-jibu-landing.html" data-i18n="back_link"></a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow" data-i18n="eyebrow"></div>
+    <h1 class="title" data-i18n="title"></h1>
+    <p class="subtitle" data-i18n="subtitle"></p>
+
+    <form id="regForm" class="card">
+      <div class="field">
+        <label for="jina" data-i18n="label_name"></label>
+        <input type="text" id="jina" required data-i18n-ph="ph_name">
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label for="chuo" data-i18n="label_uni"></label>
+          <input type="text" id="chuo" required data-i18n-ph="ph_uni">
+        </div>
+        <div class="field">
+          <label for="somo" data-i18n="label_subject"></label>
+          <input type="text" id="somo" required data-i18n-ph="ph_subject">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="maelezo" data-i18n="label_desc"></label>
+        <textarea id="maelezo" required data-i18n-ph="ph_desc"></textarea>
+        <div class="hint" data-i18n="hint_desc"></div>
+      </div>
+
+      <div class="field">
+        <label for="faili" data-i18n="label_file"></label>
+        <div class="file-drop" id="fileDrop">
+          <span id="fileLabel" data-i18n="file_label_default"></span>
+          <input type="file" id="faili">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="tarehe" data-i18n="label_deadline"></label>
+        <input type="date" id="tarehe" required>
+      </div>
+
+      <button type="submit" class="submit-btn" data-i18n="submit_btn"></button>
+      <div class="disclaimer" data-i18n="disclaimer"></div>
+    </form>
+
+    <div class="confirm" id="confirmCard">
+      <svg width="48" height="48" viewBox="0 0 56 56" aria-hidden="true"><rect width="56" height="56" rx="14" fill="#0F6E56"/><rect x="12" y="12" width="32" height="24" rx="8" fill="none" stroke="#fff" stroke-width="3"/><path d="M20 36 L20 45 L29 36" fill="#fff"/><path d="M19 24 L25 30 L37 17" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h2 data-i18n="confirm_title"></h2>
+      <p id="confirmText" data-i18n="confirm_text"></p>
+      <button class="submit-btn" data-i18n="confirm_btn" onclick="location.reload()"></button>
+    </div>
+  </div>
+</main>
+
+<script>
+const translations = {
+  sw: {
+    back_link: "← Rudi Nyumbani",
+    eyebrow: "Fomu ya Usajili", title: "Tuma maelezo ya kazi yako",
+    subtitle: "Jaza fomu hapa chini. Mshauri wetu atakupokea kwenye WhatsApp na kukupa bei sahihi kabla ya kuanza msaada.",
+    label_name: "Jina la Mwanafunzi", ph_name: "mfano: Juma Msafiri",
+    label_uni: "Chuo", ph_uni: "mfano: UDSM",
+    label_subject: "Somo / Fani", ph_subject: "mfano: Java Programming",
+    label_desc: "Maelezo ya Kazi", ph_desc: "Elezea kazi unayohitaji msaada wa kitaaluma — mada, malengo, na maswali muhimu.",
+    hint_desc: "Tunatoa utafiti, muundo, na uhakiki — si kukamilisha kazi kwa niaba yako.",
+    label_file: "Ambatanisha Faili (hiari)", file_label_default: "Bofya kuchagua faili, au liambatanishe baadaye kwenye WhatsApp",
+    label_deadline: "Tarehe ya Mwisho (Deadline)",
+    submit_btn: "Tuma na Peleka WhatsApp",
+    disclaimer: "Nipe Jibu ni huduma ya ushauri wa kitaaluma. Kazi ya mwisho unaandika wewe mwenyewe.",
+    confirm_title: "Umefanikiwa!",
+    confirm_text: "WhatsApp inafunguka na maelezo yako. Ukiwa na faili la kuambatanisha, litume kwenye mazungumzo yatakayofunguka.",
+    confirm_btn: "Tuma Ombi Jingine",
+    file_selected_prefix: "Faili limechaguliwa: ",
+    file_reminder_prefix: "WhatsApp inafunguka na maelezo yako. Usisahau kuambatanisha faili lako (",
+    file_reminder_suffix: ") kwenye mazungumzo."
+  },
+  en: {
+    back_link: "← Back Home",
+    eyebrow: "Registration", title: "Send your task details",
+    subtitle: "Fill in the form below. Our consultant will reach you on WhatsApp and give you an accurate price before support begins.",
+    label_name: "Student Name", ph_name: "e.g. Juma Msafiri",
+    label_uni: "University", ph_uni: "e.g. UDSM",
+    label_subject: "Subject / Major", ph_subject: "e.g. Java Programming",
+    label_desc: "Task Details", ph_desc: "Describe the academic support you need — topic, goals, and key questions.",
+    hint_desc: "We provide research, structuring, and review — not completing the work on your behalf.",
+    label_file: "Attach File (optional)", file_label_default: "Click to choose a file, or attach it later on WhatsApp",
+    label_deadline: "Deadline",
+    submit_btn: "Submit and Open WhatsApp",
+    disclaimer: "Nipe Jibu is an academic consultancy service. You write the final work yourself.",
+    confirm_title: "Success!",
+    confirm_text: "WhatsApp is opening with your details. If you have a file to attach, send it in the chat that opens.",
+    confirm_btn: "Submit Another Request",
+    file_selected_prefix: "File selected: ",
+    file_reminder_prefix: "WhatsApp is opening with your details. Don't forget to attach your file (",
+    file_reminder_suffix: ") in the chat."
+  }
+};
+
+let currentLang = "sw";
+const WHATSAPP_NUMBER = "255753838827"; // NB: badilisha na namba halisi ya WhatsApp ya biashara
+
+function setLang(lang){
+  currentLang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = translations[lang][el.dataset.i18n]; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = translations[lang][el.dataset.i18nPh]; });
+  document.getElementById('langBtnSw').classList.toggle('active', lang === 'sw');
+  document.getElementById('langBtnEn').classList.toggle('active', lang === 'en');
+  document.documentElement.lang = lang;
+  if (fileInput.files.length > 0) {
+    fileLabel.textContent = translations[lang].file_selected_prefix + fileInput.files[0].name;
+  }
+}
+
+const fileInput = document.getElementById('faili');
+const fileDrop = document.getElementById('fileDrop');
+const fileLabel = document.getElementById('fileLabel');
+fileInput.addEventListener('change', () => {
+  if (fileInput.files.length > 0) {
+    fileDrop.classList.add('has-file');
+    fileLabel.textContent = translations[currentLang].file_selected_prefix + fileInput.files[0].name;
+  }
+});
+
+document.getElementById('regForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const jina = document.getElementById('jina').value.trim();
+  const chuo = document.getElementById('chuo').value.trim();
+  const somo = document.getElementById('somo').value.trim();
+  const maelezo = document.getElementById('maelezo').value.trim();
+  const tarehe = document.getElementById('tarehe').value;
+  const hasFile = fileInput.files.length > 0;
+
+  const lines = [
+    currentLang === 'sw' ? "Ombi Jipya la Msaada wa Kitaaluma — Nipe Jibu" : "New Academic Support Request — Nipe Jibu",
+    (currentLang === 'sw' ? "Jina: " : "Name: ") + jina,
+    (currentLang === 'sw' ? "Chuo: " : "University: ") + chuo,
+    (currentLang === 'sw' ? "Somo/Fani: " : "Subject: ") + somo,
+    (currentLang === 'sw' ? "Maelezo: " : "Details: ") + maelezo,
+    (currentLang === 'sw' ? "Tarehe ya Mwisho: " : "Deadline: ") + tarehe,
+    hasFile ? (currentLang === 'sw' ? "Kumbuka: Nitaambatanisha faili hapa kwenye WhatsApp." : "Note: I will attach the file here on WhatsApp.") : ""
+  ].filter(Boolean);
+
+  const message = encodeURIComponent(lines.join("\n"));
+  const waLink = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + message;
+  window.open(waLink, "_blank");
+
+  document.getElementById('regForm').style.display = 'none';
+  document.getElementById('confirmCard').classList.add('show');
+  if (hasFile) {
+    document.getElementById('confirmText').textContent =
+      translations[currentLang].file_reminder_prefix + fileInput.files[0].name + translations[currentLang].file_reminder_suffix;
+  }
+});
+
+setLang('en');
+</script>
+
+</body>
+</html>

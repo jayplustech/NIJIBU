@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nipe Jibu — Dashibodi ya Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cover:#0F6E56; --cover-dark:#085041; --accent:#D85A30; --accent-dark:#993C1D; --amber:#C77E13;
+    --ink:#262421; --ink-soft:#5b5850; --card:#FFFFFF; --line:#E4E1D8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:'IBM Plex Sans', sans-serif; color:#fff; background:var(--cover); line-height:1.5;}
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:600; margin:0;}
+  a{color:inherit; text-decoration:none;}
+  :focus-visible{outline:3px solid var(--accent); outline-offset:2px;}
+  button{font-family:inherit;}
+  svg{display:block;}
+
+  header.nav{
+    position:sticky; top:0; z-index:50; background:var(--cover-dark);
+    border-bottom:1px solid rgba(255,255,255,0.15);
+    display:flex; align-items:center; justify-content:space-between; padding:14px 6vw; gap:16px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-weight:600; font-size:19px; font-family:'Fraunces',serif; color:#fff;}
+  .brand svg{width:32px; height:32px;}
+  .brand .sub{color:rgba(255,255,255,0.6); font-weight:400; font-size:14px; margin-left:4px;}
+  .nav-right{display:flex; align-items:center; gap:14px;}
+  .lang-toggle{display:flex; background:rgba(255,255,255,0.12); border-radius:20px; padding:3px;}
+  .lang-btn{background:none; border:none; color:rgba(255,255,255,0.7); font-size:12.5px; font-weight:600; padding:5px 12px; border-radius:16px; cursor:pointer; font-family:'IBM Plex Sans',sans-serif;}
+  .lang-btn.active{background:#fff; color:var(--cover);}
+  .back-link{font-size:14px; color:rgba(255,255,255,0.75);}
+  .back-link:hover{color:#fff;}
+
+  main{padding:40px 6vw 80px; max-width:1000px; margin:0 auto;}
+  .page-head{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px; margin-bottom:28px;}
+  h1.title{font-size:clamp(24px,4vw,30px); color:#fff;}
+  .subtitle{color:rgba(255,255,255,0.75); font-size:14px; margin-top:6px;}
+
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px;}
+  @media (max-width:640px){ .stats{grid-template-columns:1fr;} }
+  .stat-card{background:var(--card); border-radius:12px; padding:18px 20px; color:var(--ink);}
+  .stat-card .count{font-family:'Fraunces',serif; font-size:30px; line-height:1;}
+  .stat-card .label{font-size:13px; color:var(--ink-soft); margin-top:4px;}
+  .stat-card.pending .count{color:var(--amber);}
+  .stat-card.active .count{color:#3468A6;}
+  .stat-card.done .count{color:var(--cover);}
+
+  .tabs{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;}
+  .tab{background:rgba(255,255,255,0.12); color:#fff; border:none; border-radius:20px; padding:8px 16px; font-size:13.5px; cursor:pointer; font-weight:500;}
+  .tab.active{background:#fff; color:var(--cover);}
+
+  .task-list{display:flex; flex-direction:column; gap:12px;}
+  .task{background:var(--card); border-radius:12px; padding:18px 20px; color:var(--ink); display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .task-main{flex:1; min-width:220px;}
+  .task-main .name{font-weight:600; font-size:15px;}
+  .task-main .meta{font-size:13px; color:var(--ink-soft); margin-top:4px;}
+  .task-main .desc{font-size:13px; color:var(--ink-soft); margin-top:6px; max-width:480px;}
+  .task-side{display:flex; flex-direction:column; align-items:flex-end; gap:10px; min-width:150px;}
+  .deadline{font-size:12.5px; color:var(--ink-soft);}
+  .badge{font-size:12px; font-weight:600; border-radius:12px; padding:4px 12px; white-space:nowrap;}
+  .badge.pending{background:#FBEBD3; color:var(--amber);}
+  .badge.active{background:#DCE8F5; color:#3468A6;}
+  .badge.done{background:#DDEFE8; color:var(--cover);}
+  .task-actions{display:flex; gap:6px;}
+  .btn-sm{border:none; border-radius:7px; padding:6px 12px; font-size:12.5px; font-weight:600; cursor:pointer;}
+  .btn-sm.primary{background:var(--cover); color:#fff;}
+  .btn-sm.primary:hover{background:var(--cover-dark);}
+  .btn-sm.accent{background:var(--accent); color:#fff;}
+  .btn-sm.accent:hover{background:var(--accent-dark);}
+  .btn-sm.ghost{background:transparent; border:1px solid var(--line); color:var(--ink-soft);}
+  .empty{background:var(--card); border-radius:12px; padding:40px; text-align:center; color:var(--ink-soft); font-size:14px;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="brand">
+    <svg viewBox="0 0 56 56" aria-hidden="true"><rect width="56" height="56" rx="14" fill="#0F6E56"/><rect x="12" y="12" width="32" height="24" rx="8" fill="none" stroke="#fff" stroke-width="3"/><path d="M20 36 L20 45 L29 36" fill="#fff"/><path d="M19 24 L25 30 L37 17" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Nipe Jibu <span class="sub">/ Admin</span>
+  </div>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" id="langBtnSw" onclick="setLang('sw')">SW</button>
+      <button class="lang-btn active" id="langBtnEn" onclick="setLang('en')">EN</button>
+    </div>
+    <a class="back-link" href="nipe-jibu-landing.html" data-i18n="back_link"></a>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <div>
+      <h1 class="title" data-i18n="page_title"></h1>
+      <div class="subtitle" data-i18n="page_subtitle"></div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card pending">
+      <div class="count" id="countPending">0</div>
+      <div class="label" data-i18n="stat_pending"></div>
+    </div>
+    <div class="stat-card active">
+      <div class="count" id="countActive">0</div>
+      <div class="label" data-i18n="stat_active"></div>
+    </div>
+    <div class="stat-card done">
+      <div class="count" id="countDone">0</div>
+      <div class="label" data-i18n="stat_done"></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-filter="all" data-i18n="tab_all" onclick="setFilter('all', this)"></button>
+    <button class="tab" data-filter="pending" data-i18n="tab_pending" onclick="setFilter('pending', this)"></button>
+    <button class="tab" data-filter="active" data-i18n="tab_active" onclick="setFilter('active', this)"></button>
+    <button class="tab" data-filter="done" data-i18n="tab_done" onclick="setFilter('done', this)"></button>
+  </div>
+
+  <div class="task-list" id="taskList"></div>
+</main>
+
+<script>
+const translations = {
+  sw: {
+    back_link: "← Rudi Nyumbani",
+    page_title: "Dashibodi ya Admin", page_subtitle: "Simamia maombi ya msaada wa kitaaluma yaliyopokewa kupitia WhatsApp.",
+    stat_pending: "Pending", stat_active: "Inaendelea", stat_done: "Imekamilika",
+    tab_all: "Zote", tab_pending: "Pending", tab_active: "Inaendelea", tab_done: "Imekamilika",
+    deadline_label: "Deadline: ",
+    badge_pending: "Pending", badge_active: "Inaendelea", badge_done: "Imekamilika",
+    btn_start: "Anza", btn_complete: "Kamilisha", btn_revert: "Rudisha", btn_reopen: "Fungua tena",
+    empty: "Hakuna maombi ya kuonyesha kwenye kichujio hiki."
+  },
+  en: {
+    back_link: "← Back Home",
+    page_title: "Admin Dashboard", page_subtitle: "Manage academic support requests received over WhatsApp.",
+    stat_pending: "Pending", stat_active: "Active", stat_done: "Completed",
+    tab_all: "All", tab_pending: "Pending", tab_active: "Active", tab_done: "Completed",
+    deadline_label: "Deadline: ",
+    badge_pending: "Pending", badge_active: "Active", badge_done: "Completed",
+    btn_start: "Start", btn_complete: "Complete", btn_revert: "Revert", btn_reopen: "Reopen",
+    empty: "No requests to show for this filter."
+  }
+};
+
+let currentLang = "sw";
+let currentFilter = "all";
+
+let tasks = [
+  {id:1, name:"Juma Msafiri", chuo:"UDSM", somo:"Java Programming", desc:"Muundo wa programu ya kikokotoo cha msingi.", deadline:"15 Oct", status:"pending"},
+  {id:2, name:"Amina Kileo", chuo:"SUA", somo:"Uchumi wa Kilimo", desc:"Utafiti kuhusu athari za mabadiliko ya tabianchi.", deadline:"18 Oct", status:"pending"},
+  {id:3, name:"Peter Mwakalinga", chuo:"UDSM", somo:"Sheria", desc:"Uhakiki wa insha kuhusu haki za binadamu.", deadline:"20 Oct", status:"active"},
+  {id:4, name:"Fatma Said", chuo:"MUHAS", somo:"Uuguzi", desc:"Muundo wa ripoti ya mazoezi ya kliniki.", deadline:"14 Oct", status:"active"},
+  {id:5, name:"Godfrey Lyimo", chuo:"UDOM", somo:"Takwimu", desc:"Msaada wa kuelewa uchambuzi wa regression.", deadline:"12 Oct", status:"done"},
+  {id:6, name:"Rehema Chuma", chuo:"UDSM", somo:"Uhandisi", desc:"Uhakiki wa muundo wa mradi wa mwisho.", deadline:"10 Oct", status:"done"},
+  {id:7, name:"Salum Bakari", chuo:"SUA", somo:"Biolojia", desc:"Utafiti kuhusu bioanuwai ya misitu ya Tanzania.", deadline:"22 Oct", status:"pending"},
+];
+
+function setLang(lang){
+  currentLang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = translations[lang][el.dataset.i18n]; });
+  document.getElementById('langBtnSw').classList.toggle('active', lang === 'sw');
+  document.getElementById('langBtnEn').classList.toggle('active', lang === 'en');
+  document.documentElement.lang = lang;
+  render();
+}
+
+function setFilter(filter, btn){
+  currentFilter = filter;
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function render(){
+  const tr = translations[currentLang];
+  document.getElementById('countPending').textContent = tasks.filter(t=>t.status==='pending').length;
+  document.getElementById('countActive').textContent = tasks.filter(t=>t.status==='active').length;
+  document.getElementById('countDone').textContent = tasks.filter(t=>t.status==='done').length;
+
+  const list = document.getElementById('taskList');
+  const filtered = currentFilter === 'all' ? tasks : tasks.filter(t=>t.status===currentFilter);
+
+  if(filtered.length === 0){
+    list.innerHTML = '<div class="empty">' + tr.empty + '</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(t => `
+    <div class="task">
+      <div class="task-main">
+        <div class="name">${t.name}</div>
+        <div class="meta">${t.chuo} &middot; ${t.somo}</div>
+        <div class="desc">${t.desc}</div>
+      </div>
+      <div class="task-side">
+        <div class="deadline">${tr.deadline_label}${t.deadline}</div>
+        <span class="badge ${t.status}">${tr['badge_' + t.status]}</span>
+        <div class="task-actions">${actionButtons(t, tr)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function actionButtons(t, tr){
+  if(t.status === 'pending'){
+    return `<button class="btn-sm primary" onclick="setStatus(${t.id},'active')">${tr.btn_start}</button>`;
+  }
+  if(t.status === 'active'){
+    return `<button class="btn-sm accent" onclick="setStatus(${t.id},'done')">${tr.btn_complete}</button>
+            <button class="btn-sm ghost" onclick="setStatus(${t.id},'pending')">${tr.btn_revert}</button>`;
+  }
+  return `<button class="btn-sm ghost" onclick="setStatus(${t.id},'active')">${tr.btn_reopen}</button>`;
+}
+
+function setStatus(id, status){
+  tasks = tasks.map(t => t.id === id ? {...t, status} : t);
+  render();
+}
+
+setLang('en');
+</script>
+
+</body>
+</html>
